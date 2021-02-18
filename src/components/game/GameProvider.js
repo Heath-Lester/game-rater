@@ -3,7 +3,10 @@ import React, { useState } from "react"
 export const GameContext = React.createContext()
 
 export const GameProvider = (props) => {
+
     const [ games, setGames ] = useState([])
+
+    const [ game, setGame ] = useState([])
 
     const getGames = () => {
         return fetch("http://localhost:8000/games", {
@@ -13,6 +16,16 @@ export const GameProvider = (props) => {
         })
             .then(response => response.json())
             .then(setGames)
+    }
+
+    const getGame = (gameId) => {
+        return fetch(`http://localhost:8000/games/${gameId}`, {
+            headers:{
+                "Authorization": `Token ${localStorage.getItem("lu_token")}`
+            }
+        })
+            .then(response => response.json())
+            .then(setGame)
     }
 
     const createGame = (game) => {
@@ -30,7 +43,7 @@ export const GameProvider = (props) => {
     
 
     return (
-        <GameContext.Provider value={{ games, getGames, createGame }} >
+        <GameContext.Provider value={{ games, getGames, game, getGame, createGame }} >
             { props.children }
         </GameContext.Provider>
     )
